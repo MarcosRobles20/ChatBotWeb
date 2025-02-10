@@ -1,0 +1,14 @@
+<div class="chat-area mat-app-background">
+    <div class="messages" #messageContainer>
+      <ng-container *ngFor="let message of messages; trackBy: trackByTimestamp">
+        <mat-card class="message" [class.user-message]="message.isUser">
+          <mat-card-content>
+            {{ message.content }}
+          </mat-card-content>
+          <div class="message-time">
+            {{ message.timestamp | date:'shortTime' }}
+          </div>
+        </mat-card>
+      </ng-container>
+    </div>
+  </div>

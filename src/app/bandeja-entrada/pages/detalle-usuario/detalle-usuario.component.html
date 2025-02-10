@@ -1,0 +1,17 @@
+<div class="container">
+    <mat-card class="user-info-card">
+        <mat-card-header>
+            <div mat-card-avatar class="user-avatar">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{persona.nombre}}" alt="User avatar">
+            </div>
+            <mat-card-title>{{persona.nombre}}</mat-card-title>
+            <mat-card-subtitle>
+                <div class="email">{{persona.email}}</div>
+                <div class="date">Miembro desde {{persona.fechaRegistro| date:'mediumDate'}}</div>
+            </mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+
+    <h3>Chatbot</h3>
+    <app-chat-container></app-chat-container>
+</div>
