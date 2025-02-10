@@ -1,0 +1,7 @@
+<mat-card class="chat-container">
+    <app-chat-area [messages]="messages"></app-chat-area>
+    <div class="input-area">
+      <app-input-field (input)="handleInput($event)"></app-input-field>
+      <app-send-button (click)="handleSend()"></app-send-button>
+    </div>
+  </mat-card>
