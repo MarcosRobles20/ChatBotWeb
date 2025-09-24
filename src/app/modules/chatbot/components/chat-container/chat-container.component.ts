@@ -1,10 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SendButtonComponent } from '../../shared/send-button/send-button.component';
-import { InputFieldComponent } from '../../shared/input-field/input-field.component';
-import { ChatAreaComponent } from '../../shared/chat-area/chat-area.component';
-import { SharedModule } from '../../shared/shared.module';
-import { DetalleUsuarioComponent } from "../../../bandeja-entrada/pages/detalle-usuario/detalle-usuario.component";
+import { CommonModule } from '@angular/common';
+import { SendButtonComponent } from '../send-button/send-button.component';
+import { InputFieldComponent } from '../input-field/input-field.component';
+import { ChatAreaComponent } from '../chat-area/chat-area.component';
+import { SharedModule } from '../../shared.module';
 import { Message } from '../../interfaces/Message.interface';
 
 @Component({

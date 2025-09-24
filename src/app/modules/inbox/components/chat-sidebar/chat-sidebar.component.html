@@ -1,0 +1,60 @@
+<div class="sidebar-container">
+  <div class="sidebar-header">
+    <h3>Chats</h3>
+    <button mat-icon-button (click)="refreshChats()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+  
+  <mat-divider></mat-divider>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>Cargando chats...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="refreshChats()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Chats List -->
+  <mat-list *ngIf="!loading && !error" class="chat-list">
+    <mat-list-item 
+      *ngFor="let chat of chats" 
+      (click)="onChatClick(chat)"
+      [class.selected]="isSelected(chat.idChat)"
+      class="chat-item">
+      
+      <div class="chat-content">
+        <div class="chat-header">
+          <h4 class="chat-title">{{ chat.title || 'Sin título' }}</h4>
+          <span class="chat-id">ID: {{ chat.idChat }}</span>
+        </div>
+        
+        <div class="chat-info">
+          <p class="chat-message" *ngIf="chat.message">
+            {{ chat.message }}
+          </p>
+          <p class="chat-message empty" *ngIf="!chat.message">
+            Sin mensajes
+          </p>
+          <span class="chat-date">{{ formatDate(chat.lastModified) }}</span>
+        </div>
+      </div>
+      
+      <mat-icon class="chat-arrow">chevron_right</mat-icon>
+    </mat-list-item>
+  </mat-list>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && chats.length === 0" class="empty-state">
+    <mat-icon>chat_bubble_outline</mat-icon>
+    <p>No hay chats disponibles</p>
+  </div>
+</div>

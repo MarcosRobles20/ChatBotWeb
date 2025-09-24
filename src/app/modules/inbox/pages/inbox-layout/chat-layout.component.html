@@ -1,0 +1,50 @@
+<mat-sidenav-container class="chat-container">
+  <!-- Sidebar -->
+  <mat-sidenav 
+    #sidenav 
+    mode="side" 
+    [opened]="sidenavOpened"
+    class="chat-sidenav">
+    <app-chat-sidebar 
+      [selectedChatId]="selectedChatId"
+      (chatSelected)="onChatSelected($event)">
+    </app-chat-sidebar>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="chat-content">
+    <!-- Toolbar -->
+    <mat-toolbar class="chat-toolbar">
+      <button 
+        mat-icon-button 
+        (click)="toggleSidenav()"
+        aria-label="Toggle menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">
+        {{ selectedChat ? selectedChat.title || 'Chat sin título' : 'Selecciona un chat' }}
+      </span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <span *ngIf="selectedChat" class="chat-info">
+        ID: {{ selectedChat.idChat }}
+      </span>
+    </mat-toolbar>
+
+    <!-- Content Area -->
+    <div class="main-content">
+      <div *ngIf="!selectedChat" class="welcome-message">
+        <mat-icon class="welcome-icon">chat</mat-icon>
+        <h2>Bienvenido al Chat</h2>
+        <p>Selecciona un chat del sidebar para comenzar a conversar</p>
+      </div>
+
+      <!-- Aquí se cargará el componente del chat específico -->
+      <div *ngIf="selectedChat" class="chat-detail">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
