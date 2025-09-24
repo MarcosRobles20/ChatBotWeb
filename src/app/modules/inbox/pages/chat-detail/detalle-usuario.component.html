@@ -1,0 +1,54 @@
+<div class="container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-card class="loading-card">
+      <mat-card-content>
+        <div class="loading-content">
+          <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+          <p>Cargando chat...</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon color="warn" class="error-icon">error</mat-icon>
+          <p>{{ error }}</p>
+          <button mat-button color="primary" (click)="loadChatDetail()">
+            Reintentar
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Chat Content -->
+  <div *ngIf="chat && !loading && !error" class="chat-container">
+    <!-- Chat Header -->
+    <mat-card class="chat-info-card">
+      <mat-card-header>
+        <div mat-card-avatar class="chat-avatar">
+          <mat-icon>chat</mat-icon>
+        </div>
+        <mat-card-title>{{ chat.title || 'Chat sin título' }}</mat-card-title>
+        <mat-card-subtitle>
+          <div class="chat-details">
+            <div>ID: {{ chat.idChat }}</div>
+            <div>Usuario: {{ chat.idUser }}</div>
+            <div>Última actividad: {{ chat.lastModified | date:'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages-section">
+      <h3>Conversación</h3>
+      <app-chat-container></app-chat-container>
+    </div>
+  </div>
+</div>

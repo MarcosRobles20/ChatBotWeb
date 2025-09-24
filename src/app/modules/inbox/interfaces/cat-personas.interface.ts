@@ -1,5 +1,5 @@
 export interface CatPersonas {
-    id: number;
+    idUser: number;
     nombre: string;
     email: string;
     fechaRegistro: Date;
