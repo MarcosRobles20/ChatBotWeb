@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, output, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../../shared.module';
@@ -17,9 +17,16 @@ import { SharedModule } from '../../shared.module';
 })
 export class SendButtonComponent {
   @Output() click = new EventEmitter<void>();
-
+  @Output() keypress = new EventEmitter<KeyboardEvent>();
+  
   onClick(): void {
     this.click.emit();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      this.keypress.emit(event);
+    }
   }
 
 }

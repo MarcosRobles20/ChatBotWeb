@@ -8,13 +8,13 @@ import { MatCardModule } from '@angular/material/card';
 import { SharedModule } from '../../../chatbot/shared.module';
 
 @Component({
-  selector: 'app-detalle-usuario',
-  templateUrl: './detalle-usuario.component.html',
-  styleUrl: './detalle-usuario.component.css',
+  selector: 'app-chat-detail',
+  templateUrl: './chat-detail.component.html',
+  styleUrl: './chat-detail.component.css',
   standalone: true,
   imports: [CommonModule, ChatContainerComponent, SharedModule, MatCardModule]
 })
-export class DetalleUsuarioComponent implements OnInit {
+export class ChatDetailComponent implements OnInit {
   chat: Chat | null = null;
   idChat: string | null = null;  // Mantener como string desde la URL
   loading = false;
@@ -43,7 +43,7 @@ export class DetalleUsuarioComponent implements OnInit {
 
     const chatId = parseInt(this.idChat);
 
-    this.chatService.getChatWithIdChat(chatId, 1).subscribe({
+    this.chatService.getChatWithIdChat(chatId).subscribe({
       next: (data) => {
         this.chat = data.response;
         this.loading = false;
@@ -51,7 +51,7 @@ export class DetalleUsuarioComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar chat:', error);
-        console.error('Datos enviados:', { idChat: chatId, idUser: 1 });
+        console.error('Datos enviados:', { idChat: chatId });
         this.error = 'Error al cargar el chat';
         this.loading = false;
       }

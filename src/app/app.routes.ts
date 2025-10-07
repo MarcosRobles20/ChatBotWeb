@@ -1,26 +1,34 @@
 import { Routes } from "@angular/router";
 import { ChatLayoutComponent } from "./modules/inbox/pages/inbox-layout/chat-layout.component";
-import { DetalleUsuarioComponent } from "./modules/inbox/pages/chat-detail/detalle-usuario.component";
+import { ChatDetailComponent } from "./modules/inbox/pages/chat-detail/chat-detail.component";
 import { ChatContainerComponent } from "./modules/chatbot/components/chat-container/chat-container.component";
+import { LoginComponent } from "./modules/auth/components/login/login.component";
+import { AuthGuard } from "./core/guards/auth.guard";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/inbox', pathMatch: 'full' },
   
-  // Rutas con sidebar layout - Módulo Inbox
+  // Authentication routes (public)
+  { path: 'login', component: LoginComponent },
+  
+  // Protected routes
   { 
     path: 'inbox', 
     component: ChatLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'chats', pathMatch: 'full' },
       { path: 'chats', component: ChatLayoutComponent },
-      { path: 'chat/:id', component: DetalleUsuarioComponent }
+      { path: 'chat/:id', component: ChatDetailComponent }
     ]
   },
   
-  // Rutas independientes
-  { path: 'chatbot', component: ChatContainerComponent },
+  { 
+    path: 'chatbot', 
+    component: ChatContainerComponent,
+    canActivate: [AuthGuard] 
+  },
   
-  // Rutas de compatibilidad (mantener por si acaso)
-  { path: 'bandeja-entrada', redirectTo: '/inbox', pathMatch: 'full' },
-  { path: 'detalle-usuario/:id', redirectTo: '/inbox/chat/:id', pathMatch: 'full' }
+  // Wildcard
+  { path: '**', redirectTo: '/login' }
 ];

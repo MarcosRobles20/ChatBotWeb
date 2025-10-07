@@ -22,6 +22,11 @@
       Reintentar
     </button>
   </div>
+  
+  <button mat-button (click)="createNewChat()">
+    <mat-icon>add</mat-icon>
+    Nuevo Chat
+  </button>
 
   <!-- Chats List -->
   <mat-list *ngIf="!loading && !error" class="chat-list">
@@ -38,11 +43,11 @@
         </div>
         
         <div class="chat-info">
-          <p class="chat-message" *ngIf="chat.message">
-            {{ chat.message }}
+          <p class="chat-message" *ngIf="chat.title">
+            {{ chat.title }}
           </p>
-          <p class="chat-message empty" *ngIf="!chat.message">
-            Sin mensajes
+          <p class="chat-message empty" *ngIf="!chat.title">
+            Sin título
           </p>
           <span class="chat-date">{{ formatDate(chat.lastModified) }}</span>
         </div>

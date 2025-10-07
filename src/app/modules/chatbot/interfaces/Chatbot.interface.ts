@@ -1,8 +1,8 @@
 import { Message } from "./Message.interface";
 
 export interface Chatbot {
-  usuarioId: number;
-  mensajes: Message[];
-  ultimaActualizacion: Date;
+  idUser: number;
+  chatMessages: Message[];
+  lastUpdated: Date;
   id: number;
 }

@@ -23,6 +23,7 @@ import { ChatService } from '../../services/chat.service';
   styleUrls: ['./chat-sidebar.component.css']
 })
 export class ChatSidebarComponent implements OnInit {
+
   @Output() chatSelected = new EventEmitter<Chat>();
   @Input() selectedChatId: number | null = null;
   
@@ -40,7 +41,7 @@ export class ChatSidebarComponent implements OnInit {
     this.loading = true;
     this.error = null;
     
-    this.chatService.getChatsWithIdUser(1).subscribe({
+    this.chatService.getChatsWithIdUser().subscribe({
       next: (data) => {
         this.chats = Array.isArray(data) ? data : data.response || [];
         this.loading = false;
@@ -77,4 +78,9 @@ export class ChatSidebarComponent implements OnInit {
   refreshChats(): void {
     this.loadChats();
   }
+
+  createNewChat() {
+    
+  }
+
 }

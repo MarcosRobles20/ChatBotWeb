@@ -1,6 +1,8 @@
 export interface CatPersonas {
     idUser: number;
-    nombre: string;
+    name: string;
     email: string;
-    fechaRegistro: Date;
+    registrationDate: Date;
+    isActive: boolean;
+    role: string;
 }
