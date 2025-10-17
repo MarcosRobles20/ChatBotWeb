@@ -1,6 +1,6 @@
 export interface Chat {
-    idChat: number;
-    idUser: number;
+    idChat: string;
+    idUser: string;
     message: string | null;
     lastModified: string;
     title: string;

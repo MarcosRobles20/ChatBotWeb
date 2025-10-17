@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { Chat } from '../../interfaces/chat.interface';
 import { ChatService } from '../../services/chat.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -25,13 +26,16 @@ import { ChatService } from '../../services/chat.service';
 export class ChatSidebarComponent implements OnInit {
 
   @Output() chatSelected = new EventEmitter<Chat>();
-  @Input() selectedChatId: number | null = null;
+  @Input() selectedChatId: string | null = null;
   
   chats: Chat[] = [];
   loading = false;
   error: string | null = null;
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadChats();
@@ -60,8 +64,8 @@ export class ChatSidebarComponent implements OnInit {
     this.chatSelected.emit(chat);
   }
 
-  isSelected(chatId: number): boolean {
-    return this.selectedChatId === chatId;
+  isSelected(chatId: string): boolean {
+    return this.selectedChatId == chatId;
   }
 
   formatDate(dateString: string): string {
@@ -80,6 +84,24 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   createNewChat() {
+    const newChat: Chat = {
+      idChat: '', // ID will be assigned by the backend
+      idUser: this.authService.getCurrentUser()?.idUser || '', // Set the current user's ID here
+      title: 'Nuevo Chat',
+      message: 'Bienvenido al ChatBot de Marcos, puedes preguntarme cualquier cosa sobre el y su experiencia como desarrollador web full stack.',
+      lastModified: new Date().toISOString()
+    };
+    
+    this.chatService.createChat(newChat).subscribe({
+      next: (data) => {
+        console.log('Chat creado:', data);
+        this.loadChats(); // Refresh the chat list after creating a new chat
+      },
+      error: (error) => {
+        console.error('Error al crear chat:', error);
+        this.error = 'Error al crear el chat';
+      }
+    });
     
   }
 

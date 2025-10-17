@@ -32,7 +32,7 @@ export class ChatService {
     return this.http.post<any>(`${environment.apiUrl + apiCatalog.chat}/getChatsWithIdUser`, payload);
   }
 
-  getChatWithIdChat(idChat: number): Observable<any> {
+  getChatWithIdChat(idChat: string): Observable<any> {
     const currentUser = this.authService.getCurrentUser();
     const idUser = currentUser?.idUser;
     
@@ -47,4 +47,9 @@ export class ChatService {
     
     return this.http.post<any>(`${environment.apiUrl + apiCatalog.chat}/getChatWithIdChat`, payload);
   }
+
+  createChat(chat: Chat): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl + apiCatalog.chat}/createChat`, chat);
+  }
+
 }
