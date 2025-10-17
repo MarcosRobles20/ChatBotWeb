@@ -59,7 +59,7 @@ export class ChatLayoutComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  get selectedChatId(): number | null {
+  get selectedChatId(): string | null {
     return this.selectedChat?.idChat || null;
   }
 }

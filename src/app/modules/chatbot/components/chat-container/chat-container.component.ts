@@ -27,6 +27,7 @@ export class ChatContainerComponent {
       const newMessage: Message = {
         content: this.message,
         isUser: true,
+        role: 'user',
         timestamp: Date.now()
       };
       this.messages.push(newMessage);

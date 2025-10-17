@@ -41,7 +41,7 @@ export class ChatDetailComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const chatId = parseInt(this.idChat);
+    const chatId = this.idChat;
 
     this.chatService.getChatWithIdChat(chatId).subscribe({
       next: (data) => {
