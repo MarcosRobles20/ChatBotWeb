@@ -1,54 +1,35 @@
-<mat-sidenav-container class="chat-container">
+<mat-sidenav-container class="chat-container" [hasBackdrop]="false">
   <!-- Sidebar -->
   <mat-sidenav 
     #sidenav 
     mode="side" 
-    [opened]="sidenavOpened"
+    [opened]="true"
+    [disableClose]="true"
+    [fixedInViewport]="false"
+    [style.width.px]="sidenavWidth"
+    [class.collapsed]="sidenavMinimized"
+    [class.expanded]="!sidenavMinimized"
+    [class.no-transition]="isInitialLoad"
     class="chat-sidenav">
     <app-chat-sidebar 
       [selectedChatId]="selectedChatId"
-      (chatSelected)="onChatSelected($event)">
+      [minimized]="sidenavMinimized"
+      (chatSelected)="onChatSelected($event)"
+      (welcomeRequested)="onWelcomeRequested()"
+      (toggleRequested)="toggleSidenav()">
     </app-chat-sidebar>
   </mat-sidenav>
 
   <!-- Main Content -->
   <mat-sidenav-content class="chat-content">
-    <!-- Toolbar -->
-    <mat-toolbar class="chat-toolbar">
-      <button 
-        mat-icon-button 
-        (click)="toggleSidenav()"
-        aria-label="Toggle menu">
-        <mat-icon>menu</mat-icon>
-      </button>
-      
-      <span class="toolbar-title">
-        {{ selectedChat ? selectedChat.title || 'Chat sin título' : 'Selecciona un chat' }}
-      </span>
-      
-      <span class="toolbar-spacer"></span>
-      
-      <!-- User info and logout -->
-      <div class="user-section" *ngIf="currentUser">
-        <span class="user-name">{{ currentUser.name }}</span>
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Cerrar Sesión</span>
-          </button>
-        </mat-menu>
-      </div>
-    </mat-toolbar>
-
     <!-- Content Area -->
     <div class="main-content">
       <div *ngIf="!selectedChat" class="welcome-message">
-        <mat-icon class="welcome-icon">chat</mat-icon>
-        <h2>Bienvenido al Chat</h2>
-        <p>Selecciona un chat del sidebar para comenzar a conversar</p>
+        <div class="welcome-icon">
+          <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="welcome-logo">
+        </div>
+        <h2 class="welcome-title">¡Bienvenido a tu asistente Wienner!</h2>
+        <p class="welcome-text">Selecciona un chat del sidebar para comenzar a conversar</p>
       </div>
 
       <!-- Aquí se cargará el componente del chat específico -->

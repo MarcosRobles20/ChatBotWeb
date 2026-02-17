@@ -17,8 +17,6 @@ export const routes: Routes = [
     component: ChatLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'chats', pathMatch: 'full' },
-      { path: 'chats', component: ChatLayoutComponent },
       { path: 'chat/:id', component: ChatDetailComponent }
     ]
   },

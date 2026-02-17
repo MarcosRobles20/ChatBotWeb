@@ -1,3 +1,9 @@
-<button mat-icon-button color="primary" (click)="onClick()" (keypress)="onKeyPress($event)">
-    <mat-icon>send</mat-icon>
-  </button>
+<button 
+  mat-icon-button
+  [disabled]="disabled"
+  (click)="onClick()" 
+  (keypress)="onKeyPress($event)"
+  class="send-button"
+  [class.button-active]="!disabled">
+  <mat-icon class="send-icon">arrow_upward</mat-icon>
+</button>

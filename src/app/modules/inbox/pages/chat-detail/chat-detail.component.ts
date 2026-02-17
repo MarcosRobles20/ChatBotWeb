@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../services/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
 import { ChatContainerComponent } from "../../../chatbot/components/chat-container/chat-container.component";
 import { MatCardModule } from '@angular/material/card';
 import { SharedModule } from '../../../chatbot/shared.module';
+import { Message } from '../../../chatbot/interfaces/Message.interface';
 
 @Component({
   selector: 'app-chat-detail',
@@ -16,23 +17,69 @@ import { SharedModule } from '../../../chatbot/shared.module';
 })
 export class ChatDetailComponent implements OnInit {
   chat: Chat | null = null;
-  idChat: string | null = null;  // Mantener como string desde la URL
+  messages: Message[] = [];
+  idChat: string = "";  // Mantener como string desde la URL
   loading = false;
   error: string | null = null;
+  private skipNextRouteLoad = false;
+  @Output() IdChat = new EventEmitter<string>();
 
   constructor(
     private route: ActivatedRoute,
     private chatService: ChatService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.idChat = params['id'];  
-      
-      if (this.idChat) {
-        this.loadChatDetail();
+      this.idChat = params['id'] || '';
+      this.IdChat.emit(this.idChat);
+
+      if (this.skipNextRouteLoad && this.idChat && this.idChat !== 'new') {
+        this.skipNextRouteLoad = false;
+        return;
       }
+
+      if (this.idChat && this.idChat !== 'new') {
+        this.loadChatDetail();
+        return;
+      }
+
+      this.initializeDraftChat();
     });
+  }
+
+  private initializeDraftChat(): void {
+    this.loading = false;
+    this.error = null;
+    this.chat = {
+      idChat: '',
+      idUser: '',
+      title: '',
+      message: null,
+      lastModified: new Date().toISOString(),
+      messages: [],
+      totalMessages: 0,
+      maxMessages: 100,
+      success: true
+    };
+    this.messages = [];
+  }
+
+  onChatCreated(chatId: string): void {
+    const normalizedChatId = (chatId || '').trim();
+    if (!normalizedChatId || normalizedChatId === this.idChat) {
+      return;
+    }
+
+    this.idChat = normalizedChatId;
+    if (this.chat) {
+      this.chat.idChat = normalizedChatId;
+    }
+
+    this.skipNextRouteLoad = true;
+    this.chatService.requestChatsRefresh();
+    this.router.navigate(['/inbox/chat', normalizedChatId], { replaceUrl: true });
   }
 
   loadChatDetail(): void {
@@ -43,11 +90,13 @@ export class ChatDetailComponent implements OnInit {
 
     const chatId = this.idChat;
 
-    this.chatService.getChatWithIdChat(chatId).subscribe({
+    this.chatService.getChatMessages(chatId).subscribe({
       next: (data) => {
-        this.chat = data.response;
+        this.chat = data;
+        // Mapear los mensajes al formato esperado
+        this.messages = this.mapApiMessagesToMessageFormat(data.messages || []);
         this.loading = false;
-        console.log('Chat cargado:', this.chat);
+        console.log('Chat cargado:', this.chat, 'Mensajes:', this.messages);
       },
       error: (error) => {
         console.error('Error al cargar chat:', error);
@@ -56,5 +105,14 @@ export class ChatDetailComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private mapApiMessagesToMessageFormat(apiMessages: any[]): Message[] {
+    return apiMessages.map((msg) => ({
+      content: msg.role === 'user' ? msg.userMessage : msg.aiResponse,
+      isUser: msg.role === 'user',
+      role: msg.role,
+      timestamp: msg.createDate
+    }));
   }
 }

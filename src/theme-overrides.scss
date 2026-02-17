@@ -1,0 +1,244 @@
+/* Dark Theme Overrides for Angular Material Components */
+
+.dark-theme {
+  /* Global background and text */
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+
+  /* Cards */
+  .mat-mdc-card,
+  mat-card {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Toolbar */
+  .mat-toolbar,
+  .mat-mdc-toolbar,
+  mat-toolbar {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Sidenav */
+  .mat-drawer,
+  .mat-sidenav,
+  mat-sidenav {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-drawer-container,
+  .mat-sidenav-container,
+  mat-sidenav-container {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-drawer-content,
+  .mat-sidenav-content,
+  mat-sidenav-content {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Form Fields */
+  .mat-mdc-form-field,
+  mat-form-field {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--bg-input) !important;
+  }
+
+  .mat-mdc-input-element,
+  input.mat-input-element {
+    color: var(--text-primary) !important;
+    caret-color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-input-element::placeholder {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Labels */
+  .mat-mdc-form-field-label,
+  .mat-form-field-label {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Menu */
+  .mat-mdc-menu-panel,
+  .mat-menu-panel {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .mat-mdc-menu-item,
+  .mat-menu-item {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-menu-item:hover {
+    background-color: var(--bg-input) !important;
+  }
+
+  /* Select */
+  .mat-mdc-select,
+  mat-select {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-select-panel {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .mat-mdc-option,
+  .mat-option {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .mat-mdc-option:hover,
+  .mat-option:hover {
+    background-color: var(--bg-input) !important;
+  }
+
+  .mat-mdc-option.mat-selected,
+  .mat-option.mat-selected {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Icons */
+  .mat-icon,
+  mat-icon {
+    color: var(--text-primary) !important;
+  }
+
+  /* Buttons */
+  .mat-mdc-button,
+  .mat-mdc-icon-button,
+  .mat-button,
+  .mat-icon-button,
+  button:not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+    color: var(--text-primary) !important;
+  }
+
+  /* FAB buttons */
+  .mat-mdc-fab,
+  .mat-mdc-mini-fab {
+    background-color: #2196f3 !important;
+    color: white !important;
+  }
+
+  /* List items */
+  .mat-mdc-list-item,
+  .mat-list-item {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-list-item:hover,
+  .mat-list-item:hover {
+    background-color: var(--bg-input) !important;
+  }
+
+  /* Dividers */
+  .mat-divider,
+  mat-divider,
+  hr {
+    border-color: var(--border-color) !important;
+  }
+
+  /* Headers and Titles */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+  }
+
+  p, span, div {
+    color: var(--text-primary);
+  }
+
+  /* Scrollbar for dark mode */
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary) !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #666 !important;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #888 !important;
+  }
+
+  /* Chat specific components */
+  .chat-container {
+    background-color: var(--bg-primary) !important;
+  }
+
+  .chat-area {
+    background: var(--bg-secondary) !important;
+  }
+
+  .input-area {
+    background: var(--bg-secondary) !important;
+  }
+
+  .message {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .user-message {
+    background: #2196f3 !important;
+    color: white !important;
+  }
+
+  /* Sidebar components */
+  .sidebar-header,
+  .chat-sidebar {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Tooltips */
+  .mat-mdc-tooltip,
+  .mat-tooltip {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+/* Light theme explicit styles */
+.light-theme {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+
+  .mat-mdc-card,
+  mat-card {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-toolbar,
+  .mat-mdc-toolbar,
+  mat-toolbar {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-drawer-container,
+  .mat-sidenav-container,
+  mat-sidenav-container {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .chat-area {
+    background: var(--bg-secondary) !important;
+  }
+
+  .input-area {
+    background: var(--bg-secondary) !important;
+  }
+}

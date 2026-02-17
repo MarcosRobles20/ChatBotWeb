@@ -28,27 +28,8 @@
 
   <!-- Chat Content -->
   <div *ngIf="chat && !loading && !error" class="chat-container">
-    <!-- Chat Header -->
-    <mat-card class="chat-info-card">
-      <mat-card-header>
-        <div mat-card-avatar class="chat-avatar">
-          <mat-icon>chat</mat-icon>
-        </div>
-        <mat-card-title>{{ chat.title || 'Chat sin título' }}</mat-card-title>
-        <mat-card-subtitle>
-          <div class="chat-details">
-            <div>ID: {{ chat.idChat }}</div>
-            <div>Usuario: {{ chat.idUser }}</div>
-            <div>Última actividad: {{ chat.lastModified | date:'dd/MM/yyyy HH:mm' }}</div>
-          </div>
-        </mat-card-subtitle>
-      </mat-card-header>
-    </mat-card>
-
-    <!-- Chat Messages -->
     <div class="chat-messages-section">
-      <h3>Conversación</h3>
-      <app-chat-container></app-chat-container>
+      <app-chat-container [idChat]="idChat" [messages]="messages" (chatCreated)="onChatCreated($event)"></app-chat-container>
     </div>
   </div>
 </div>

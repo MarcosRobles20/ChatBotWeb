@@ -1,12 +1,78 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0 10%;
+  background: var(--bg-secondary);
+}
+
 .chat-container {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--bg-secondary);
+  overflow: hidden;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Remover padding del mat-card */
+:host ::ng-deep .chat-container .mat-mdc-card {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .chat-container .mdc-card {
+  padding: 0 !important;
+}
+
+app-chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  /* background: var(--bg-primary, white);
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04); */
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  transition: box-shadow 0.3s ease;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  background: var(--bg-input, #f5f5f5);
+  border-radius: 20px;
+  padding: 4px 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-wrapper app-input-field {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding: 0 16px;
   }
-  .input-area {
-    gap: 0.5rem;
-    padding: 1rem;
-    background: white;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    align-items: center;
-  }
+}

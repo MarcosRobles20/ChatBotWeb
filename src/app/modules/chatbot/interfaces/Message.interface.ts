@@ -1,6 +1,7 @@
 export interface Message {
     content: string;
     isUser: boolean;
-    role: 'user' | 'bot';
-    timestamp: number;
+    role: 'user' | 'bot' | 'assistant' | 'system' ;
+    timestamp: string;
+    
   }

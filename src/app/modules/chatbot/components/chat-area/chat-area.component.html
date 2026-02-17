@@ -1,9 +1,19 @@
 <div class="chat-area mat-app-background">
-    <div class="messages" #messageContainer>
+    <div class="messages" #messageContainer [appAutoScroll]="true" [messages]="messages">
+      <!-- Welcome message when messages are empty -->
+      <div class="welcome-message" *ngIf="messages.length === 0">
+        <div class="welcome-icon">
+          <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="welcome-logo">
+        </div>
+        <h2 class="welcome-title">¡Bienvenido a tu asistente Wienner!</h2>
+        <p class="welcome-text">Pequeño, ligero y poderoso</p>
+      </div>
+
+      <!-- Chat messages -->
       <ng-container *ngFor="let message of messages; trackBy: trackByTimestamp">
         <mat-card class="message" [class.user-message]="message.isUser">
-          <mat-card-content>
-            {{ message.content }}
+          <mat-card-content class="message-content">
+            <div class="message-text" [innerHTML]="message.content | markdown"></div>
           </mat-card-content>
           <div class="message-time">
             {{ message.timestamp | date:'shortTime' }}

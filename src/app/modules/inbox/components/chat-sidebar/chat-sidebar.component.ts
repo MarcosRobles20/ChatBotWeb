@@ -1,13 +1,18 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { Chat } from '../../interfaces/chat.interface';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from '../../../../core/services/theme.service';
+import { User } from '../../../../core/interfaces/auth.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -18,27 +23,76 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ],
   templateUrl: './chat-sidebar.component.html',
   styleUrls: ['./chat-sidebar.component.css']
 })
-export class ChatSidebarComponent implements OnInit {
+export class ChatSidebarComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() chatSelected = new EventEmitter<Chat>();
+  @Output() welcomeRequested = new EventEmitter<void>();
+  @Output() toggleRequested = new EventEmitter<void>();
   @Input() selectedChatId: string | null = null;
+  @Input() minimized: boolean = false;
   
   chats: Chat[] = [];
   loading = false;
   error: string | null = null;
+  private subscriptions = new Subscription();
 
   constructor(
     private chatService: ChatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    public themeService: ThemeService
   ) {}
+
+  get currentUser(): User | null {
+    return this.authService.getCurrentUser();
+  }
+
+  get userName(): string {
+    const user = this.currentUser;
+    return user?.name || user?.email || 'Usuario';
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  goToWelcome(): void {
+    this.selectedChatId = null;
+    this.welcomeRequested.emit();
+  }
+
+  toggleSidebar(): void {
+    this.toggleRequested.emit();
+  }
 
   ngOnInit(): void {
     this.loadChats();
+    this.subscriptions.add(
+      this.chatService.chatsRefreshRequested$.subscribe(() => {
+        this.loadChats();
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['minimized']) {
+      console.log('Estado minimizado del sidebar cambió a:', this.minimized);
+    }
   }
 
   loadChats(): void {
@@ -84,25 +138,8 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   createNewChat() {
-    const newChat: Chat = {
-      idChat: '', // ID will be assigned by the backend
-      idUser: this.authService.getCurrentUser()?.idUser || '', // Set the current user's ID here
-      title: 'Nuevo Chat',
-      message: 'Bienvenido al ChatBot de Marcos, puedes preguntarme cualquier cosa sobre el y su experiencia como desarrollador web full stack.',
-      lastModified: new Date().toISOString()
-    };
-    
-    this.chatService.createChat(newChat).subscribe({
-      next: (data) => {
-        console.log('Chat creado:', data);
-        this.loadChats(); // Refresh the chat list after creating a new chat
-      },
-      error: (error) => {
-        console.error('Error al crear chat:', error);
-        this.error = 'Error al crear el chat';
-      }
-    });
-    
+    this.selectedChatId = null;
+    this.welcomeRequested.emit();
   }
 
 }

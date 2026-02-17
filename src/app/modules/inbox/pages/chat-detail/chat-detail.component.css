@@ -2,9 +2,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 16px;
-  overflow: auto;
+  background: var(--bg-secondary);
 }
 
 .loading-container,
@@ -19,6 +17,8 @@
 .error-card {
   max-width: 400px;
   width: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .loading-content,
@@ -28,6 +28,7 @@
   align-items: center;
   text-align: center;
   padding: 32px;
+  color: var(--text-primary);
 }
 
 .loading-icon,
@@ -35,24 +36,27 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  margin-bottom: 16px;
+  color: var(--text-secondary);
 }
 
 .loading-content p,
 .error-content p {
   margin: 0 0 16px 0;
   font-size: 16px;
+  color: var(--text-primary);
 }
 
 .chat-container {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  background: var(--bg-secondary);
+  height: 100%;
 }
 
 .chat-info-card {
   flex-shrink: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .chat-avatar {
@@ -71,7 +75,7 @@
 
 .chat-details div {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .chat-messages-section {
@@ -79,17 +83,24 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
+  height: 100%;
 }
 
 .chat-messages-section h3 {
   margin: 0 0 16px 0;
   font-size: 18px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
+  padding: 16px 16px 0;
+  background: var(--bg-secondary);
 }
 
 app-chat-container {
   flex: 1;
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 0;
+  overflow: hidden;
+  height: 100%;
 }

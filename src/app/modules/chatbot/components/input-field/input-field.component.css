@@ -1,9 +1,76 @@
-.example-full-width {
-    width: 90% !important;
-  }
-  :host ::ng-deep .mat-mdc-form-field-wrapper {
-    padding-bottom: 0;
-  }
-  :host ::ng-deep .mat-mdc-text-field-wrapper {
-    background-color: white;
-  }
+:host {
+  display: block;
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.message-input {
+  width: 100%;
+  margin: 0;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 8px 2px 8px;
+}
+
+.send-button {
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+}
+
+.send-button mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.send-button.button-active {
+  background: linear-gradient(135deg, #8198ff 0%, #006cc5 100%);
+  color: white;
+}
+
+.send-button.button-active:hover {
+  transform: scale(1.05);
+}
+
+/* Remover bordes del textarea */
+:host ::ng-deep .mdc-text-field--outlined .mdc-notched-outline {
+  display: none;
+}
+
+:host ::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: transparent;
+  padding: 4px 12px;
+}
+
+:host ::ng-deep .message-input .mat-mdc-form-field-infix {
+  min-height: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+:host ::ng-deep .message-input textarea.mat-mdc-input-element {
+  margin: 0;
+  line-height: 1.3;
+}
+
+:host ::ng-deep .send-button .mat-mdc-button-touch-target {
+  width: 32px;
+  height: 32px;
+}
+
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}

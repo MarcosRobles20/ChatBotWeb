@@ -1,21 +1,58 @@
-<div class="sidebar-container">
+<section class="sidebar-container" [class.collapsed]="minimized" [class.expanded]="!minimized">
   <div class="sidebar-header">
-    <h3>Chats</h3>
-    <button mat-icon-button (click)="refreshChats()" [disabled]="loading">
+    <!-- Logo expandido -->
+    <div class="logo-section" *ngIf="!minimized" (click)="goToWelcome()" 
+      matTooltip="Ir a inicio" matTooltipPosition="right">
+      <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="sidebar-logo">
+    </div>
+    
+    <!-- Logo minimizado -->
+    <div class="logo-section-minimized" *ngIf="minimized" (click)="goToWelcome()"
+      matTooltip="Ir a inicio" matTooltipPosition="right">
+      <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="sidebar-logo-mini">
+    </div>
+    
+    <!-- Botón nuevo chat (minimizado) -->
+    <button mat-icon-button 
+      (click)="createNewChat()" 
+      *ngIf="minimized"
+      matTooltip="Nueva conversación" 
+      matTooltipPosition="right"
+      class="action-btn">
+      <mat-icon>add</mat-icon>
+    </button>
+    
+    <!-- Botón refresh (expandido) -->
+    <button mat-icon-button 
+      (click)="refreshChats()" 
+      [disabled]="loading" 
+      *ngIf="!minimized"
+      matTooltip="Recargar chats" 
+      matTooltipPosition="right"
+      class="action-btn">
       <mat-icon>refresh</mat-icon>
+    </button>
+    
+    <!-- Botón toggle (siempre visible) -->
+    <button mat-icon-button 
+      (click)="toggleSidebar()"
+      [matTooltip]="minimized ? 'Expandir' : 'Contraer'" 
+      matTooltipPosition="right"
+      class="toggle-btn">
+      <mat-icon>{{ minimized ? 'chevron_right' : 'chevron_left' }}</mat-icon>
     </button>
   </div>
   
-  <mat-divider></mat-divider>
+  <mat-divider *ngIf="!minimized"></mat-divider>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading-state">
+  <div *ngIf="loading && !minimized" class="loading-state">
     <mat-icon>hourglass_empty</mat-icon>
     <p>Cargando chats...</p>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error && !loading" class="error-state">
+  <div *ngIf="error && !loading && !minimized" class="error-state">
     <mat-icon color="warn">error</mat-icon>
     <p>{{ error }}</p>
     <button mat-button color="primary" (click)="refreshChats()">
@@ -23,18 +60,20 @@
     </button>
   </div>
   
-  <button mat-button (click)="createNewChat()">
+  <button mat-button (click)="createNewChat()" *ngIf="!minimized" class="new-chat-btn">
     <mat-icon>add</mat-icon>
-    Nuevo Chat
+    Iniciar conversación
   </button>
 
-  <!-- Chats List -->
-  <mat-list *ngIf="!loading && !error" class="chat-list">
+  <!-- Chats List - Solo visible cuando está expandido -->
+  <mat-list *ngIf="!loading && !error && !minimized" class="chat-list">
     <mat-list-item 
       *ngFor="let chat of chats" 
       (click)="onChatClick(chat)"
       [class.selected]="isSelected(chat.idChat)"
-      class="chat-item">
+      class="chat-item"
+      [matTooltip]="chat.title || 'Sin título'"
+      matTooltipPosition="right">
       
       <div class="chat-content">
         <div class="chat-header">
@@ -58,8 +97,62 @@
   </mat-list>
 
   <!-- Empty State -->
-  <div *ngIf="!loading && !error && chats.length === 0" class="empty-state">
+  <div *ngIf="!loading && !error && chats.length === 0 && !minimized" class="empty-state">
     <mat-icon>chat_bubble_outline</mat-icon>
     <p>No hay chats disponibles</p>
   </div>
-</div>
+
+  <!-- User Section - Expanded -->
+  <div class="user-section" *ngIf="!minimized">
+    <mat-divider></mat-divider>
+    <div class="user-info">
+      <div class="user-details">
+        <mat-icon class="user-avatar">account_circle</mat-icon>
+        <span class="user-name">{{ userName }}</span>
+      </div>
+      <div class="user-actions">
+        <button mat-icon-button 
+          (click)="toggleTheme()"
+          [matTooltip]="themeService.darkMode() ? 'Modo claro' : 'Modo oscuro'"
+          matTooltipPosition="above"
+          class="theme-toggle">
+          <mat-icon>{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+        <button mat-icon-button 
+          (click)="logout()"
+          matTooltip="Cerrar sesión"
+          matTooltipPosition="above"
+          class="logout-btn">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Section - Minimized -->
+  <div class="user-section-minimized" *ngIf="minimized">
+    <mat-divider></mat-divider>
+    <div class="user-actions-minimized">
+      <button mat-icon-button 
+        matTooltip="{{ userName }}"
+        matTooltipPosition="right"
+        class="minimized-btn">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <button mat-icon-button 
+        (click)="toggleTheme()"
+        [matTooltip]="themeService.darkMode() ? 'Modo claro' : 'Modo oscuro'"
+        matTooltipPosition="right"
+        class="minimized-btn theme-toggle">
+        <mat-icon>{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+      <button mat-icon-button 
+        (click)="logout()"
+        matTooltip="Cerrar sesión"
+        matTooltipPosition="right"
+        class="minimized-btn logout-btn">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
+</section>
