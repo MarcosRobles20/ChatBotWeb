@@ -1,0 +1,13 @@
+<mat-form-field appearance="fill" class="model-selector">
+  <mat-select 
+    [(value)]="selectedModel" 
+    (selectionChange)="onModelChange()"
+    [disabled]="disabled || isLoading">
+    <mat-option *ngIf="isLoading" disabled>
+      Cargando...
+    </mat-option>
+    <mat-option *ngFor="let model of availableModels" [value]="model.name">
+      {{ model.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

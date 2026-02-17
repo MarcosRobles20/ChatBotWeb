@@ -1,7 +1,18 @@
 <mat-card class="chat-container">
-    <app-chat-area [messages]="messages"></app-chat-area>
-    <div class="input-area">
-      <app-input-field (input)="handleInput($event)"></app-input-field>
-      <app-send-button (click)="handleSend()"></app-send-button>
+  <!-- Área de mensajes con scroll -->
+  <app-chat-area [messages]="messages"></app-chat-area>
+  
+  <!-- Footer con input integrado -->
+  <div class="input-area">
+    <div class="input-wrapper">
+      <app-input-field 
+        [message]="message"
+        [selectedModel]="selectedModel"
+        (messageChange)="handleInput($event)"
+        (modelChange)="handleModelChange($event)"
+        (sendMessage)="handleSend()"
+        [disabled]="isSending">
+      </app-input-field>
     </div>
-  </mat-card>
+  </div>
+</mat-card>

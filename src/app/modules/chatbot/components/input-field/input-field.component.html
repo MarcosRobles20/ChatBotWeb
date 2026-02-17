@@ -1,3 +1,36 @@
-<mat-form-field class="example-full-width">
-    <input matInput placeholder="Escribe un mensaje" [(ngModel)]="message" (ngModelChange)="onInput()">
+<div class="input-container">
+  <!-- Nivel 1: Textarea -->
+  <mat-form-field class="message-input" subscriptSizing="dynamic" appearance="outline">
+    <textarea 
+      matInput 
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      [cdkAutosizeMinRows]="1"
+      [cdkAutosizeMaxRows]="10"
+      placeholder="Envía un mensaje..." 
+      [(ngModel)]="message" 
+      (ngModelChange)="onInput()"
+      (keydown.enter)="onEnterKey($event)"
+      autocomplete="off"
+      rows="1"></textarea>
   </mat-form-field>
+  
+  <!-- Nivel 2: Controles -->
+  <div class="controls-row">
+    <app-model-selector 
+      [selectedModel]="selectedModel" 
+      (modelChange)="onModelChange($event)" 
+      [disabled]="disabled">
+    </app-model-selector>
+    
+    <button 
+      mat-icon-button
+      class="send-button"
+      [class.button-active]="!disabled && message.trim()"
+      [disabled]="disabled || !message.trim()"
+      (click)="onSendClick()"
+      type="button">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+  </div>
+</div>

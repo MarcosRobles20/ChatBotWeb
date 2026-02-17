@@ -1,3 +1,59 @@
-    .send-button {
-      transform: scale(0.85);
-    }
+.send-button {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: var(--bg-input, #e5e5e5);
+  color: var(--text-secondary, #666);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.send-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.send-button:hover::before {
+  opacity: 0.08;
+}
+
+.send-button.button-active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.send-button.button-active:hover {
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  transform: translateY(-1px);
+}
+
+.send-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bg-input, #e5e5e5);
+  color: var(--text-secondary, #999);
+}
+
+.send-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  transition: transform 0.3s ease;
+}
+
+.send-button.button-active:hover .send-icon {
+  transform: translateY(-2px);
+}

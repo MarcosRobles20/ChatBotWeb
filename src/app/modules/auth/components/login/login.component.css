@@ -3,12 +3,14 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background-image: url('..\\src\\assets\\images\\background.png');
+  background-size: auto;
   padding: 20px;
 }
 
 .login-card {
-  max-width: 400px;
+  max-width: 400px; 
   width: 100%;
   padding: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -26,9 +28,17 @@
   color: #333;
 }
 
+.dark-theme .login-card mat-card-title {
+  color: #ffffff;
+}
+
 .login-card mat-card-subtitle {
   color: #666;
   margin-top: 5px;
+}
+
+.dark-theme .login-card mat-card-subtitle {
+  color: #e0e0e0;
 }
 
 .full-width {
