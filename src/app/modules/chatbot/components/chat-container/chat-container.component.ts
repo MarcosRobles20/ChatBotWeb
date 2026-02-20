@@ -83,13 +83,16 @@ export class ChatContainerComponent {
     this.messagesArray = [...this.messagesArray, userMessage];
     this.message = ''; // Limpiar input
 
-    // Prepare message history for Ollama
-    // Preparar el historial de mensajes para Ollama
+    // Prepare only last message for backend (it handles history from DB)
+    // Preparar solo el último mensaje para backend (el historial viene de DB)
     const currentUser = this.authService.getCurrentUser();
-    const chatMessages: ChatMessageItem[] = this.messagesArray.map(msg => ({
-      role: msg.role === 'bot' ? 'assistant' : msg.role,
-      content: msg.content
-    }));
+    const lastMessage = this.messagesArray[this.messagesArray.length - 1];
+    const chatMessages: ChatMessageItem[] = lastMessage
+      ? [{
+          role: lastMessage.role === 'bot' ? 'assistant' : lastMessage.role,
+          content: lastMessage.content
+        }]
+      : [];
 
     const payload: OllamaChatRequest = {
       idUser: currentUser?.idUser?.toString() || '',

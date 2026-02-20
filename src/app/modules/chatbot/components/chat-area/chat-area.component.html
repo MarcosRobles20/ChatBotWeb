@@ -16,7 +16,7 @@
             <div class="message-text" [innerHTML]="message.content | markdown"></div>
           </mat-card-content>
           <div class="message-time">
-            {{ message.timestamp | date:'shortTime' }}
+            {{ message.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
           </div>
         </mat-card>
       </ng-container>
