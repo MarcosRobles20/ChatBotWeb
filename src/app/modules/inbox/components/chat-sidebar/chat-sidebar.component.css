@@ -1,7 +1,7 @@
 .sidebar-container {
   height: 100%;
   width: 100%;
-  background: var(--bg-primary);
+  background: var(--sidebar-bg, #e8e8e8);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -70,7 +70,7 @@ mat-divider {
 
 .sidebar-header {
   padding: 12px;
-  background: var(--bg-primary);
+  background: var(--sidebar-bg, #e8e8e8);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,7 +107,7 @@ mat-divider {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
-  background: var(--bg-primary);
+  background: var(--sidebar-bg, #e8e8e8);
 }
 
 .chat-item {
@@ -265,7 +265,7 @@ mat-divider {
 /* USER SECTION */
 .user-section {
   margin-top: auto;
-  background: var(--bg-primary);
+  background: var(--sidebar-bg, #e8e8e8);
   border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
@@ -329,7 +329,7 @@ mat-divider {
 /* USER SECTION - MINIMIZED */
 .user-section-minimized {
   margin-top: auto;
-  background: var(--bg-primary);
+  background: var(--sidebar-bg, #e8e8e8);
   border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
