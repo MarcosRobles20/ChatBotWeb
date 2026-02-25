@@ -190,15 +190,10 @@
     color: var(--text-primary) !important;
   }
 
-  .user-message {
-    background: #2196f3 !important;
-    color: white !important;
-  }
-
   /* Sidebar components */
   .sidebar-header,
   .chat-sidebar {
-    background-color: var(--bg-primary) !important;
+    background-color: var(--sidebar-bg) !important;
     color: var(--text-primary) !important;
   }
 
@@ -241,4 +236,5 @@
   .input-area {
     background: var(--bg-secondary) !important;
   }
+
 }

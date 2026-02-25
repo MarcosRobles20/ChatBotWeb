@@ -23,7 +23,7 @@ export class InputFieldComponent {
   
   @Input() message: string = '';
   @Input() disabled: boolean = false;
-  @Input() selectedModel: string = 'mistral:latest';
+  @Input() selectedModel: string = 'qwen3:8b';
 
   onInput(): void {
     this.messageChange.emit(this.message);

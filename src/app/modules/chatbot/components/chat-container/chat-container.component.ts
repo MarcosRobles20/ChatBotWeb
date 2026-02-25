@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { ChatAreaComponent } from '../chat-area/chat-area.component';
@@ -6,9 +6,9 @@ import { SharedModule } from '../../shared.module';
 import { Message } from '../../interfaces/Message.interface';
 import { ChatService } from '../../../inbox/services/chat.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { finalize } from 'rxjs/operators';
-import { OllamaResponse } from '../../interfaces/OllamaResponse.interface';
+import { Subscription } from 'rxjs';
 import { OllamaChatRequest, ChatMessageItem } from '../../interfaces/OllamaChatRequest.interface';
+import { StreamChunk } from '../../interfaces/StreamChunk.interface';
 
 @Component({
   selector: 'app-chat-container',
@@ -17,7 +17,7 @@ import { OllamaChatRequest, ChatMessageItem } from '../../interfaces/OllamaChatR
   styleUrl: './chat-container.component.css',
   standalone: true
 })
-export class ChatContainerComponent {
+export class ChatContainerComponent implements OnDestroy {
   @Input() idChat: string = '';
   @Output() chatCreated = new EventEmitter<string>();
   @Input() set messages(msgs: Message[]) {
@@ -29,7 +29,11 @@ export class ChatContainerComponent {
   private messagesArray: Message[] = [];
   message: string = '';
   isSending = false;
-  selectedModel: string = 'mistral:latest';
+  isStreaming: boolean = false;
+  currentResponse: string = '';
+  currentThinking: string = '';
+  selectedModel: string = 'qwen3:8b';
+  private streamSubscription: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
@@ -45,11 +49,21 @@ export class ChatContainerComponent {
     console.log('Modelo seleccionado:', model);
   }
 
+  toggleThinkingCollapsed(timestamp: string): void {
+    this.messagesArray = this.messagesArray.map((msg) => {
+      if (msg.timestamp !== timestamp) return msg;
+      return {
+        ...msg,
+        thinkingCollapsed: !msg.thinkingCollapsed
+      };
+    });
+  }
+
   private isDraftChat(): boolean {
     return !this.idChat || this.idChat === 'new';
   }
 
-  private resolveChatId(response: OllamaResponse): string | null {
+  private resolveChatId(response: any): string | null {
     const responseAny = response as any;
     const candidates = [
       responseAny?.idChat,
@@ -63,6 +77,34 @@ export class ChatContainerComponent {
 
     const found = candidates.find((value) => typeof value === 'string' && value.trim().length > 0);
     return found ? found.trim() : null;
+  }
+
+  private updateBotStreamingMessage(timestamp: string, content: string, streaming: boolean): void {
+    this.messagesArray = this.messagesArray.map((msg) =>
+      msg.timestamp === timestamp
+        ? { ...msg, content, streaming }
+        : msg
+    );
+  }
+
+  private updateBotThinkingState(
+    timestamp: string,
+    changes: Pick<Message, 'showThinking' | 'thinkingContent' | 'thinkingCollapsed'>
+  ): void {
+    this.messagesArray = this.messagesArray.map((msg) =>
+      msg.timestamp === timestamp
+        ? { ...msg, ...changes }
+        : msg
+    );
+  }
+
+  private finalizeStreamingState(): void {
+    this.isSending = false;
+    this.isStreaming = false;
+  }
+
+  ngOnDestroy(): void {
+    this.streamSubscription?.unsubscribe();
   }
 
   handleSend(): void {
@@ -80,60 +122,113 @@ export class ChatContainerComponent {
 
     // Create new array so Angular detects the change
     // Crear nuevo array para que Angular detecte el cambio
-    this.messagesArray = [...this.messagesArray, userMessage];
+    const botMessageTimestamp = (Date.now() + 1).toString();
+    const botStreamingMessage: Message = {
+      content: '',
+      isUser: false,
+      role: 'assistant',
+      timestamp: botMessageTimestamp,
+      streaming: false,
+      showThinking: false,
+      thinkingContent: '',
+      thinkingCollapsed: false
+    };
+
+    this.messagesArray = [...this.messagesArray, userMessage, botStreamingMessage];
     this.message = ''; // Limpiar input
 
-    // Prepare message history for Ollama
-    // Preparar el historial de mensajes para Ollama
+    // Prepare only last message for backend (it handles history from DB)
+    // Preparar solo el último mensaje para backend (el historial viene de DB)
     const currentUser = this.authService.getCurrentUser();
-    const chatMessages: ChatMessageItem[] = this.messagesArray.map(msg => ({
-      role: msg.role === 'bot' ? 'assistant' : msg.role,
-      content: msg.content
-    }));
+    const chatMessages: ChatMessageItem[] = [{
+      role: userMessage.role === 'bot' ? 'assistant' : userMessage.role,
+      content: userMessage.content
+    }];
 
     const payload: OllamaChatRequest = {
       idUser: currentUser?.idUser?.toString() || '',
       model: this.selectedModel,
       idChat: this.idChat === 'new' ? '' : this.idChat,
       messages: chatMessages,
-      stream: false
+      stream: true
     };
 
     this.isSending = true;
-    this.chatService.sendMessageWithContextChat(payload).pipe(
-      finalize(() => this.isSending = false)
-    ).subscribe({
-      next: (response) => {
-        console.log('Respuesta de Ollama:', response);
-        // Add bot response - use aiResponse from backend
-        // Agregar respuesta del bot - usa aiResponse del backend
-        const botMessage: Message = {
-          content: response.aiResponse,
-          isUser: false,
-          role: 'assistant',
-          timestamp: response.timestamp
-        };
-        // Create new array so Angular detects the change
-        // Crear nuevo array para que Angular detecte el cambio
-        this.messagesArray = [...this.messagesArray, botMessage];
+    this.isStreaming = true;
+    this.currentResponse = '';
+    this.currentThinking = '';
 
-        const createdChatId = this.resolveChatId(response);
-        if (this.isDraftChat() && createdChatId) {
-          this.idChat = createdChatId;
-          this.chatCreated.emit(createdChatId);
+    this.streamSubscription?.unsubscribe();
+    this.streamSubscription = this.chatService.streamChat(payload).subscribe({
+      next: (chunk: StreamChunk) => {
+        switch (chunk.type) {
+          case 'thinking_start':
+            this.updateBotThinkingState(botMessageTimestamp, {
+              showThinking: true,
+              thinkingContent: this.currentThinking,
+              thinkingCollapsed: false
+            });
+            break;
+          case 'thinking':
+            if (chunk.content) {
+              this.currentThinking += chunk.content;
+              this.updateBotThinkingState(botMessageTimestamp, {
+                showThinking: true,
+                thinkingContent: this.currentThinking,
+                thinkingCollapsed: false
+              });
+            }
+            break;
+          case 'thinking_end':
+            this.updateBotThinkingState(botMessageTimestamp, {
+              showThinking: true,
+              thinkingContent: this.currentThinking,
+              thinkingCollapsed: true
+            });
+            break;
+          case 'response':
+            if (chunk.content) {
+              this.currentResponse += chunk.content;
+              this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, true);
+              this.updateBotThinkingState(botMessageTimestamp, {
+                showThinking: this.currentThinking.length > 0,
+                thinkingContent: this.currentThinking,
+                thinkingCollapsed: true
+              });
+            }
+            break;
+          case 'done': {
+            this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, false);
+            this.finalizeStreamingState();
+            const createdChatId = this.resolveChatId(chunk);
+            if ((this.isDraftChat() || chunk.isNewChat) && createdChatId) {
+              this.idChat = createdChatId;
+              this.chatCreated.emit(createdChatId);
+            }
+            break;
+          }
+          case 'error':
+            this.finalizeStreamingState();
+            this.updateBotStreamingMessage(
+              botMessageTimestamp,
+              this.currentResponse || chunk.error || 'Error al comunicarse con el bot. Por favor intenta de nuevo.',
+              false
+            );
+            break;
         }
       },
       error: (error) => {
-        console.error('Error al enviar mensaje:', error);
-        const errorMessage: Message = {
-          content: 'Error al comunicarse con el bot. Por favor intenta de nuevo.',
-          isUser: false,
-          role: 'assistant',
-          timestamp: Date.now().toString()
-        };
-        // Create new array so Angular detects the change
-        // Crear nuevo array para que Angular detecte el cambio
-        this.messagesArray = [...this.messagesArray, errorMessage];
+        console.error('Error en stream de chat:', error);
+        this.finalizeStreamingState();
+        this.updateBotStreamingMessage(
+          botMessageTimestamp,
+          this.currentResponse || 'Error al comunicarse con el bot. Por favor intenta de nuevo.',
+          false
+        );
+      },
+      complete: () => {
+        this.finalizeStreamingState();
+        this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, false);
       }
     });
   }

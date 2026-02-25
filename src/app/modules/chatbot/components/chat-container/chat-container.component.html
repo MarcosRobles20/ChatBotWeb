@@ -1,6 +1,6 @@
 <mat-card class="chat-container">
   <!-- Área de mensajes con scroll -->
-  <app-chat-area [messages]="messages"></app-chat-area>
+  <app-chat-area [messages]="messages" (thinkingToggle)="toggleThinkingCollapsed($event)"></app-chat-area>
   
   <!-- Footer con input integrado -->
   <div class="input-area">
