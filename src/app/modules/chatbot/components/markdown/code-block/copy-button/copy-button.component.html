@@ -1,0 +1,4 @@
+<button class="copy-btn" (click)="copy()" [attr.aria-label]="copied ? '¡Copiado!' : 'Copiar'">
+  <span *ngIf="!copied">Copiar</span>
+  <span *ngIf="copied">¡Copiado!</span>
+</button>

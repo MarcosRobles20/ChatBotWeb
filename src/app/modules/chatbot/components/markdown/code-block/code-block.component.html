@@ -1,0 +1,7 @@
+<div class="code-block-outer">
+    <div class="code-block-header">
+        <span class="code-lang">{{ language ? language.toUpperCase() : 'CODE' }}</span>
+        <button class="copy-btn" (click)="copyCode()">{{ copied ? '¡Copiado!' : 'Copiar' }}</button>
+    </div>
+    <pre><code [innerHTML]="highlightedCode" class="hljs language-{{ language }}"></code></pre>
+</div>

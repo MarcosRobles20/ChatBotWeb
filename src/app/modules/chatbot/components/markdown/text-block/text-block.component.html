@@ -1,0 +1,32 @@
+<ng-container [ngSwitch]="token.type">
+    <!-- Títulos -->
+
+    <ng-container *ngSwitchCase="'heading'">
+        <h1 *ngIf="token.depth===1" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h1>
+        <h2 *ngIf="token.depth===2" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h2>
+        <h3 *ngIf="token.depth===3" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h3>
+        <h4 *ngIf="token.depth===4" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h4>
+        <h5 *ngIf="token.depth===5" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h5>
+        <h6 *ngIf="token.depth===6" class="message-text" [innerHTML]="marked.parseInline(token.text)"></h6>
+    </ng-container>
+
+    <p *ngSwitchCase="'paragraph'" class="message-text" [innerHTML]="marked.parseInline(token.text)"></p>
+
+    <ng-container *ngSwitchCase="'list'">
+        <ul *ngIf="!token.ordered" class="message-text">
+            <li *ngFor="let item of token.items" [innerHTML]="item.text ? marked.parseInline(item.text) : ''"></li>
+        </ul>
+        <ol *ngIf="token.ordered" class="message-text">
+            <li *ngFor="let item of token.items" [innerHTML]="item.text ? marked.parseInline(item.text) : ''"></li>
+        </ol>
+    </ng-container>
+
+    <blockquote *ngSwitchCase="'blockquote'" class="message-text" [innerHTML]="marked.parseInline(token.text)">
+    </blockquote>
+
+    <!-- Línea horizontal -->
+    <hr *ngSwitchCase="'hr'" class="message-text" />
+
+    <!-- Default: raw html (por si marked agrega algo no contemplado) -->
+    <div *ngSwitchDefault class="message-text" [innerHTML]="token.raw"></div>
+</ng-container>

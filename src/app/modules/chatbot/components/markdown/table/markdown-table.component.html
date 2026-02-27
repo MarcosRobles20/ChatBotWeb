@@ -1,0 +1,14 @@
+<div class="markdown-table-wrapper">
+    <table class="markdown-table">
+        <thead>
+            <tr>
+                <th *ngFor="let cell of header" [innerHTML]="marked.parseInline(cell)"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of rows">
+                <td *ngFor="let cell of row" [innerHTML]="marked.parseInline(cell)"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
