@@ -1,5 +1,6 @@
-/* Angular Material Prebuilt Themes */
 @use 'theme-overrides.scss';
+@import 'highlight.js/styles/github-dark.css';
+/* Angular Material Prebuilt Themes */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 /* Theme Overrides */

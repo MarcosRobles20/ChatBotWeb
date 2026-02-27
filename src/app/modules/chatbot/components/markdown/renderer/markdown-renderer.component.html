@@ -1,0 +1,13 @@
+<ng-container *ngFor="let token of tokens">
+    <ng-container *ngIf="token.type === 'code'; else textBlock">
+        <app-code-block [code]="token['text']" [language]="token['lang']"></app-code-block>
+    </ng-container>
+    <ng-template #textBlock>
+        <ng-container *ngIf="token.type === 'table'; else genericText">
+            <app-markdown-table [header]="token['header']" [rows]="token['rows']"></app-markdown-table>
+        </ng-container>
+        <ng-template #genericText>
+            <app-text-block [token]="token"></app-text-block>
+        </ng-template>
+    </ng-template>
+</ng-container>

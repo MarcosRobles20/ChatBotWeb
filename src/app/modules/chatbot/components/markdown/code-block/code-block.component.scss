@@ -1,0 +1,46 @@
+.code-block-outer {
+  background: #181c23;
+  border-radius: 7px;
+  margin: 0.18em 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  overflow: hidden;
+}
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23272f;
+  color: #e6e6e6;
+  font-size: 0.93em;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+  padding: 0.35em 1.1em 0.35em 0.9em;
+  border-bottom: 1px solid #23272f;
+}
+.code-lang {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+.copy-btn {
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  font-size: 0.95em;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 2px 8px;
+  transition: background 0.2s;
+}
+.copy-btn:hover {
+  background: #23272f;
+  color: #fff;
+}
+pre {
+  background: none;
+  color: #e6e6e6;
+  margin: 0;
+  padding: 0.85em 1.1em;
+  font-size: 0.98em;
+  overflow-x: auto;
+  border-radius: 0 0 7px 7px;
+}

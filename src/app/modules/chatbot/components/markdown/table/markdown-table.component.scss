@@ -1,0 +1,27 @@
+.markdown-table-wrapper {
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+.markdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #23272f;
+  color: #e6e6e6;
+  border-radius: 7px;
+  font-size: 0.97em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.markdown-table th, .markdown-table td {
+  border: 1px solid #444;
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+.markdown-table th {
+  background: #23272f;
+  color: #fff;
+  font-weight: 600;
+}
+.markdown-table tr:nth-child(even) td {
+  background: #20232a;
+}
+

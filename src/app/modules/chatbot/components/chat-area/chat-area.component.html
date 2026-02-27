@@ -24,7 +24,9 @@
               </div>
             </div>
 
-            <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming" [innerHTML]="message.content | markdown"></div>
+            <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming">
+              <app-markdown-renderer [tokens]="message.content | markdown"></app-markdown-renderer>
+            </div>
           </mat-card-content>
           <div class="message-time">
             {{ message.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
