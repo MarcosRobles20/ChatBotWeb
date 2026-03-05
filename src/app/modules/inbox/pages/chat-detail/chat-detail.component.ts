@@ -42,6 +42,7 @@ export class ChatDetailComponent implements OnInit {
 
       if (this.idChat && this.idChat !== 'new') {
         this.loadChatDetail();
+        console.log('Cargando chat con ID:', this.idChat);
         return;
       }
 
@@ -108,11 +109,33 @@ export class ChatDetailComponent implements OnInit {
   }
 
   private mapApiMessagesToMessageFormat(apiMessages: any[]): Message[] {
-    return apiMessages.map((msg) => ({
-      content: msg.role === 'user' ? msg.userMessage : msg.aiResponse,
-      isUser: msg.role === 'user',
-      role: msg.role,
-      timestamp: msg.createDate
-    }));
+    const normalized = apiMessages.map((msg) => {
+      const order = typeof msg.messageOrder === 'number' ? msg.messageOrder : undefined;
+      const timestamp = msg.createDate || new Date().toISOString();
+      const content = msg.role === 'user'
+        ? (msg.userMessage ?? msg.content ?? '')
+        : (msg.aiResponse ?? msg.content ?? '');
+
+      return {
+        content,
+        isUser: msg.role === 'user',
+        role: msg.role,
+        timestamp,
+        kind: msg.kind || 'text',
+        messageOrder: order
+      } as Message;
+    });
+
+    return normalized.sort((a, b) => {
+      if (a.messageOrder != null && b.messageOrder != null) {
+        return a.messageOrder - b.messageOrder;
+      }
+
+      const aDate = new Date(a.timestamp).getTime();
+      const bDate = new Date(b.timestamp).getTime();
+      const safeADate = Number.isFinite(aDate) ? aDate : 0;
+      const safeBDate = Number.isFinite(bDate) ? bDate : 0;
+      return safeADate - safeBDate;
+    });
   }
 }
