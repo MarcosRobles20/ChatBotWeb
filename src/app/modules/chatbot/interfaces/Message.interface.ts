@@ -3,8 +3,10 @@ export interface Message {
     isUser: boolean;
     role: 'user' | 'bot' | 'assistant' | 'system' ;
     timestamp: string;
-  streaming?: boolean;
-  showThinking?: boolean;
-  thinkingContent?: string;
-  thinkingCollapsed?: boolean;
+    streaming?: boolean;
+    showThinking?: boolean;
+    thinkingContent?: string;
+    thinkingCollapsed?: boolean;
+    kind?: 'text' | 'image' | 'file';
+    messageOrder?: number;
   }

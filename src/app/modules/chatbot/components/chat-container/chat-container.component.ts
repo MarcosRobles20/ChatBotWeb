@@ -10,6 +10,12 @@ import { Subscription } from 'rxjs';
 import { OllamaChatRequest, ChatMessageItem } from '../../interfaces/OllamaChatRequest.interface';
 import { StreamChunk } from '../../interfaces/StreamChunk.interface';
 
+interface SourceItem {
+  title?: string;
+  url: string;
+  snippet?: string;
+}
+
 @Component({
   selector: 'app-chat-container',
   imports: [CommonModule, ChatAreaComponent, InputFieldComponent, SharedModule],
@@ -32,6 +38,9 @@ export class ChatContainerComponent implements OnDestroy {
   isStreaming: boolean = false;
   currentResponse: string = '';
   currentThinking: string = '';
+  private lastThinkingChunk: string = '';
+  private currentSources: SourceItem[] = [];
+  private sourcesAppended = false;
   selectedModel: string = 'qwen3:8b';
   private streamSubscription: Subscription | null = null;
 
@@ -117,7 +126,8 @@ export class ChatContainerComponent implements OnDestroy {
       content: text,
       isUser: true,
       role: 'user',
-      timestamp: Date.now().toString()
+      timestamp: Date.now().toString(),
+      kind: 'text'
     };
 
     // Create new array so Angular detects the change
@@ -131,7 +141,8 @@ export class ChatContainerComponent implements OnDestroy {
       streaming: false,
       showThinking: false,
       thinkingContent: '',
-      thinkingCollapsed: false
+      thinkingCollapsed: false,
+      kind: 'text'
     };
 
     this.messagesArray = [...this.messagesArray, userMessage, botStreamingMessage];
@@ -150,28 +161,43 @@ export class ChatContainerComponent implements OnDestroy {
       model: this.selectedModel,
       idChat: this.idChat === 'new' ? '' : this.idChat,
       messages: chatMessages,
-      stream: true
+      stream: true,
+      kind: 'text'
     };
 
     this.isSending = true;
     this.isStreaming = true;
     this.currentResponse = '';
     this.currentThinking = '';
+    this.currentSources = [];
+    this.sourcesAppended = false;
 
     this.streamSubscription?.unsubscribe();
     this.streamSubscription = this.chatService.streamChat(payload).subscribe({
       next: (chunk: StreamChunk) => {
         switch (chunk.type) {
           case 'thinking_start':
+            this.currentThinking = '';
+            this.lastThinkingChunk = '';
+            this.currentSources = [];
+            this.sourcesAppended = false;
             this.updateBotThinkingState(botMessageTimestamp, {
               showThinking: true,
               thinkingContent: this.currentThinking,
               thinkingCollapsed: false
             });
             break;
+
+          // Streamed intermediate events (previously 'thinking') — show as thinking stream
           case 'thinking':
-            if (chunk.content) {
-              this.currentThinking += chunk.content;
+          case 'tool_call':
+          // case 'plan':
+          case 'tool_result':
+            if (chunk.content && chunk.content !== this.lastThinkingChunk) {
+              this.currentThinking = this.currentThinking
+                ? `${this.currentThinking}\n${chunk.content}`
+                : chunk.content;
+              this.lastThinkingChunk = chunk.content;
               this.updateBotThinkingState(botMessageTimestamp, {
                 showThinking: true,
                 thinkingContent: this.currentThinking,
@@ -179,6 +205,11 @@ export class ChatContainerComponent implements OnDestroy {
               });
             }
             break;
+
+          case 'sources':
+            this.ingestSourcesChunk(chunk.content);
+            break;
+
           case 'thinking_end':
             this.updateBotThinkingState(botMessageTimestamp, {
               showThinking: true,
@@ -186,6 +217,24 @@ export class ChatContainerComponent implements OnDestroy {
               thinkingCollapsed: true
             });
             break;
+          case 'image': {
+            const imageUrl = (chunk.content || '').trim();
+            if (imageUrl.length > 0) {
+              const imageMessage: Message = {
+                content: imageUrl,
+                isUser: false,
+                role: 'assistant',
+                timestamp: (Date.now() + 2).toString(),
+                streaming: false,
+                showThinking: false,
+                thinkingContent: '',
+                thinkingCollapsed: true,
+                kind: 'image'
+              };
+              this.messagesArray = [...this.messagesArray, imageMessage];
+            }
+            break;
+          }
           case 'response':
             if (chunk.content) {
               this.currentResponse += chunk.content;
@@ -196,8 +245,9 @@ export class ChatContainerComponent implements OnDestroy {
                 thinkingCollapsed: true
               });
             }
-            break;
+          break;
           case 'done': {
+            this.ensureReferencesAppended();
             this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, false);
             this.finalizeStreamingState();
             const createdChatId = this.resolveChatId(chunk);
@@ -228,9 +278,50 @@ export class ChatContainerComponent implements OnDestroy {
       },
       complete: () => {
         this.finalizeStreamingState();
+        this.ensureReferencesAppended();
         this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, false);
       }
     });
+  }
+
+  private ingestSourcesChunk(content?: string): void {
+    if (!content) return;
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        this.currentSources = parsed
+          .filter((item) => item && item.url)
+          .map((item) => ({
+            title: item.title,
+            url: item.url,
+            snippet: item.snippet
+          }));
+        this.sourcesAppended = false;
+      }
+    } catch {
+      // Ignore malformed sources payloads
+    }
+  }
+
+  private ensureReferencesAppended(): void {
+    if (this.sourcesAppended || this.currentSources.length === 0) return;
+    const references = this.formatReferences(this.currentSources);
+    this.currentResponse = this.currentResponse
+      ? `${this.currentResponse}\n\n${references}`
+      : references;
+    this.sourcesAppended = true;
+  }
+
+  private formatReferences(sources: SourceItem[]): string {
+    const list = sources
+      .map((item) => {
+        const text = item.title || item.url;
+        const detail = item.snippet ? ` — ${item.snippet}` : '';
+        return `- [${text}](${item.url})${detail}`;
+      })
+      .join('\n');
+
+    return sources.length > 0 ? `**Referencias**\n${list}` : '';
   }
 
 

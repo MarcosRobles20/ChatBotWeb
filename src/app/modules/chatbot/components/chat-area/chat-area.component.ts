@@ -7,6 +7,7 @@ import { MarkdownPipe } from '../markdown/pipes/markdown.pipe';
 import { CopyButtonComponent } from '../markdown/code-block/copy-button/copy-button.component';
 import { MarkdownRendererComponent } from '../markdown/renderer/markdown-renderer.component';
 import { CodeBlockComponent } from '../markdown/code-block/code-block.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-chat-area',
@@ -18,6 +19,7 @@ import { CodeBlockComponent } from '../markdown/code-block/code-block.component'
 export class ChatAreaComponent {
   @Input() messages: Message[] = [];
   @Output() thinkingToggle = new EventEmitter<string>();
+  apiPythonUrl: string = environment.apiPythonUrl;
 
   trackByTimestamp(index: number, message: Message): string {
     return message.timestamp;

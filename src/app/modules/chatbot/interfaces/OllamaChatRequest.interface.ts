@@ -7,6 +7,7 @@ export interface OllamaChatRequest {
     idChat?: string;
     messages: ChatMessageItem[];
     stream?: boolean;
+    kind?: 'text' | 'image' | 'file';
 }
 
 /**

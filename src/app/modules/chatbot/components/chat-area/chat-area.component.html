@@ -24,9 +24,18 @@
               </div>
             </div>
 
-            <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming">
-              <app-markdown-renderer [tokens]="message.content | markdown"></app-markdown-renderer>
-            </div>
+            <ng-container [ngSwitch]="message.kind || 'text'">
+              <ng-container *ngSwitchCase="'image'">
+                <div class="message-image-wrapper">
+                  <img class="message-image" [src]="apiPythonUrl + message.content" alt="Imagen recibida" loading="lazy" />
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming">
+                  <app-markdown-renderer [tokens]="message.content | markdown"></app-markdown-renderer>
+                </div>
+              </ng-container>
+            </ng-container>
           </mat-card-content>
           <div class="message-time">
             {{ message.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
