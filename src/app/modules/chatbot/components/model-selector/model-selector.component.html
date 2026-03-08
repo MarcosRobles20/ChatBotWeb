@@ -6,8 +6,8 @@
     <mat-option *ngIf="isLoading" disabled>
       Cargando...
     </mat-option>
-    <mat-option *ngFor="let model of availableModels" [value]="model.name">
-      {{ model.name }}
+    <mat-option *ngFor="let model of availableModels" [value]="model.model">
+      {{ model.name || model.model }}
     </mat-option>
   </mat-select>
 </mat-form-field>

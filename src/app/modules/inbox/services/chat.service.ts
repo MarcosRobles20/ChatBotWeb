@@ -81,7 +81,7 @@ export class ChatService {
   }
 
   getModels(): Observable<ModelsResponse> {
-    return this.http.get<ModelsResponse>(`${environment.apiUrl + apiCatalog.chat}/models`);
+    return this.http.get<ModelsResponse>(`${environment.apiPythonUrl}/models`);
   }
 
   sendMessageStream(ollamaRequest: OllamaRequest): Observable<OllamaResponse> {

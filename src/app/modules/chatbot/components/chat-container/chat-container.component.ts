@@ -236,6 +236,8 @@ export class ChatContainerComponent implements OnDestroy {
             break;
           }
           case 'response':
+          case 'token':
+          case 'content':
             if (chunk.content) {
               this.currentResponse += chunk.content;
               this.updateBotStreamingMessage(botMessageTimestamp, this.currentResponse, true);

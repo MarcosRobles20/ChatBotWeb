@@ -1,5 +1,5 @@
 export interface StreamChunk {
-  type: 'thinking_start' | 'thinking' | 'thinking_end' | 'plan' | 'tool_call' | 'tool_result' | 'sources' | 'response' | 'image' | 'done' | 'error';
+  type: 'thinking_start' | 'thinking' | 'thinking_end' | 'plan' | 'tool_call' | 'tool_result' | 'sources' | 'response' | 'image' | 'done' | 'error' | 'token' | 'content';
   content?: string;
   idChat?: string;
   isNewChat?: boolean;

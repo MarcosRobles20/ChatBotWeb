@@ -14,7 +14,7 @@ export interface ModelInfo {
 }
 
 export interface ModelsResponse {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  message?: string;
   models: ModelInfo[];
 }

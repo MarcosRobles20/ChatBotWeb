@@ -31,12 +31,15 @@ export class ModelSelectorComponent implements OnInit {
     this.chatService.getModels().subscribe({
       next: (response) => {
         console.log('Modelos disponibles:', response);
-        if (response.success && response.models && Array.isArray(response.models)) {
-          this.availableModels = response.models;
+        if (response.models && Array.isArray(response.models)) {
+          this.availableModels = response.models.map(m => ({
+            ...m,
+            name: m.name ?? m.model
+          }));
           // Si el modelo seleccionado actual no está en la lista, selecciona el primero
           if (this.availableModels.length > 0 && 
-              !this.availableModels.find(m => m.name === this.selectedModel)) {
-            this.selectedModel = this.availableModels[0].name;
+              !this.availableModels.find(m => m.model === this.selectedModel)) {
+            this.selectedModel = this.availableModels[0].model;
             this.modelChange.emit(this.selectedModel);
           }
         }
