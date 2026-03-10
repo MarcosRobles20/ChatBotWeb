@@ -1,59 +1,166 @@
-# ChatBotWeb
+# Local AI Chatbot Platform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.6.
+A modular AI chatbot platform that runs **fully offline** using local LLMs.
 
-## Development server
+The system is built with a distributed architecture separating:
 
-To start a local development server, run:
+* Frontend UI
+* Backend API
+* AI Agent Service
 
-```bash
-ng serve
-```
+This architecture allows the system to scale and evolve independently while keeping the AI logic isolated from the application backend.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+# System Architecture
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The platform is composed of three repositories:
 
-```bash
-ng generate component component-name
-```
+Frontend
+ChatBotWeb (Angular)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Backend
+LocalChatBotApi (ASP.NET / C#)
 
-```bash
-ng generate --help
-```
+AI Service
+ai-agent-service (Python / LangGraph)
 
-## Building
+Flow:
 
-To build the project run:
+User
 
-```bash
-ng build
-```
+↓
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Angular Chat UI
 
-## Running unit tests
+↓
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+ASP.NET Backend API
 
-```bash
-ng test
-```
+↓
 
-## Running end-to-end tests
+Python AI Agent Service
 
-For end-to-end (e2e) testing, run:
+The backend acts as the orchestration layer between the UI and the AI agent.
 
-```bash
-ng e2e
-```
+---
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+# Features
 
-## Additional Resources
+* Local LLM execution (offline capable)
+* AI agent with tools
+* Real-time streaming responses
+* Agent reasoning visualization
+* Conversation persistence
+* Modular microservice architecture
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The system allows users to interact with an AI assistant while observing the **steps the agent takes to generate its answers**, including searches, tool calls and retrieved sources.
+
+---
+
+# Repositories
+
+## ChatBotWeb
+
+Angular application that provides the chatbot interface.
+
+Responsibilities:
+
+* chat UI
+* real time streaming rendering
+* visualization of agent events
+* conversation management
+
+---
+
+## LocalChatBotApi
+
+ASP.NET backend responsible for application logic.
+
+Responsibilities:
+
+* user management
+* chat session persistence
+* conversation history
+* message storage
+* communication with the AI service
+
+---
+
+## ai-agent-service
+
+Python microservice implementing the AI agent.
+
+Responsibilities:
+
+* agent reasoning
+* tool execution
+* knowledge retrieval (RAG)
+* streaming responses
+* agent event generation
+
+---
+
+# Technologies Used
+
+Frontend
+
+* Angular
+* TypeScript
+
+Backend
+
+* ASP.NET
+* C#
+* SQL Server
+
+AI Service
+
+* Python
+* LangGraph
+* LangChain
+* SQLite
+* Local LLMs
+
+---
+
+# AI Agent Capabilities
+
+The AI service runs an agent capable of:
+
+* executing tools
+* searching information
+* retrieving knowledge
+* summarizing results
+* generating structured responses
+
+During execution the system streams agent events such as:
+
+* search queries
+* sources discovered
+* tool executions
+* reasoning steps
+
+This makes the chatbot **transparent and explainable**.
+
+---
+
+# Goal of the Project
+
+This project explores how to build a **modular AI platform using local models**, focusing on:
+
+* privacy
+* architecture
+* agent orchestration
+* tool integration
+* explainable AI systems
+
+---
+
+# Future Improvements
+
+* RAG knowledge bases
+* long term memory
+* document ingestion pipelines
+* automated reporting
+* multi agent workflows
