@@ -1,0 +1,13 @@
+<!-- <mat-card class="agent-event-card" *ngIf="chunk && chunk.type === 'agent_event'">
+  <mat-card-header>
+    <mat-card-title>{{chunk.event_type}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p><strong>Contenido:</strong> {{ chunk.content }}</p>
+    <p *ngIf="chunk.metadata.title"><strong>Título:</strong> {{ chunk.metadata.title }}</p>
+    <p *ngIf="chunk.metadata.url"><strong>URL:</strong> <a [href]="chunk.metadata.url" target="_blank">{{ chunk.metadata.url }}</a></p>
+    <ng-container *ngFor="let key of objectKeys(chunk.metadata)">
+      <p *ngIf="key !== 'title' && key !== 'url'"><strong>{{ key }}:</strong> {{ chunk.metadata[key] }}</p>
+    </ng-container>
+  </mat-card-content>
+</mat-card> -->

@@ -1,46 +1,97 @@
 <div class="chat-area mat-app-background">
-    <div class="messages" #messageContainer [appAutoScroll]="true" [messages]="messages">
-      <!-- Welcome message when messages are empty -->
-      <div class="welcome-message" *ngIf="messages.length === 0">
-        <div class="welcome-icon">
-          <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="welcome-logo">
-        </div>
-        <h2 class="welcome-title">¡Bienvenido a tu asistente Wiener!</h2>
-        <p class="welcome-text">Pequeño, ligero y poderoso</p>
+  <div class="messages" #messageContainer [appAutoScroll]="true" [messages]="messages">
+    <!-- Welcome message when messages are empty -->
+    <div class="welcome-message" *ngIf="messages.length === 0">
+      <div class="welcome-icon">
+        <img src="/images/salchi_pixel_ready.png" alt="Salchi" class="welcome-logo">
       </div>
+      <h2 class="welcome-title">¡Bienvenido a tu asistente Wiener!</h2>
+      <p class="welcome-text">Pequeño, ligero y poderoso</p>
+    </div>
 
-      <!-- Chat messages -->
-      <ng-container *ngFor="let message of messages; trackBy: trackByTimestamp">
-        <mat-card class="message" [class.user-message]="message.isUser">
-          <mat-card-content class="message-content">
-            <div class="thinking-inline" *ngIf="!message.isUser && message.showThinking">
-              <button type="button" class="thinking-inline-toggle" (click)="onToggleThinking(message.timestamp)">
-                <span>🧠 Pensando...</span>
-                <span>{{ message.thinkingCollapsed ? '▶' : '▼' }}</span>
-              </button>
+    <!-- Chat messages -->
+    <ng-container *ngFor="let message of messages; trackBy: trackByTimestamp">
+      <mat-card class="message" [class.user-message]="message.isUser">
+        <mat-card-content class="message-content">
 
-              <div class="thinking-inline-content" *ngIf="!message.thinkingCollapsed">
-                {{ message.thinkingContent || 'Pensando...' }}
+          <!-- BLOQUE THINKING SIEMPRE QUE showThinking SEA TRUE -->
+          <div class="thinking-inline" *ngIf="!message.isUser && message.showThinking">
+            <button type="button" class="thinking-inline-toggle" (click)="onToggleThinking(message.timestamp)">
+              <span class="thinking-dots" [class.dots-paused]="!message.streaming">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </span>
+              <span>{{ message.thinkingCollapsed ? '▶' : '▼' }}</span>
+            </button>
+            <div class="thinking-inline-content" *ngIf="!message.thinkingCollapsed">
+              <div *ngIf="typeof message.agentEvents !== 'undefined' && message.agentEvents && message.agentEvents.length > 0" class="agent-events-list">
+                <div *ngFor="let chunk of message.agentEvents" class="agent-event-item">
+                  <strong>{{ chunk.event_type }}</strong>: {{ chunk.content }}
+                </div>
               </div>
             </div>
-
-            <ng-container [ngSwitch]="message.kind || 'text'">
-              <ng-container *ngSwitchCase="'image'">
-                <div class="message-image-wrapper">
-                  <img class="message-image" [src]="apiPythonUrl + message.content" alt="Imagen recibida" loading="lazy" />
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming">
-                  <app-markdown-renderer [tokens]="message.content | markdown"></app-markdown-renderer>
-                </div>
-              </ng-container>
-            </ng-container>
-          </mat-card-content>
-          <div class="message-time">
-            {{ message.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
           </div>
-        </mat-card>
-      </ng-container>
-    </div>
+
+          <ng-container [ngSwitch]="message.kind || 'text'">
+            <ng-container *ngSwitchCase="'image'">
+              <div class="message-image-wrapper">
+                <img class="message-image" [src]="apiPythonUrl + message.content" alt="Imagen recibida" loading="lazy" />
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'references'">
+              <div class="references-block">
+                <div class="references-header">
+                  <span>Referencias</span>
+                  <button *ngIf="parsedReferences(message).length > 3" (click)="toggleReferences(message.timestamp)">
+                    {{ expandedReferences[message.timestamp] ? 'Mostrar menos' : 'Mostrar todo' }}
+                  </button>
+                </div>
+                <div class="references-list">
+                  <div
+                    class="reference-card"
+                    *ngFor="let ref of parsedReferences(message) | slice:0:expandedReferences[message.timestamp] ? undefined : 3"
+                  >
+                    <div class="reference-title">
+                      <a [href]="ref.url" target="_blank">{{ ref.title || ref.url }}</a>
+                    </div>
+                    <div class="reference-source" *ngIf="ref.url">{{ ref.url }}</div>
+                    <div class="reference-snippet" *ngIf="ref.snippet">{{ ref.snippet }}</div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <div class="message-text response-block" [class.streaming-cursor]="!!message.streaming">
+                <app-markdown-renderer [tokens]="message.content | markdown"></app-markdown-renderer>
+              </div>
+              <div *ngIf="parsedReferences(message).length > 0" class="references-block">
+                <div class="references-header">
+                  <span>Referencias</span>
+                  <button *ngIf="parsedReferences(message).length > 3" (click)="toggleReferences(message.timestamp)">
+                    {{ expandedReferences[message.timestamp] ? 'Mostrar menos' : 'Mostrar todo' }}
+                  </button>
+                </div>
+                <div class="references-list">
+                  <div
+                    class="reference-card"
+                    *ngFor="let ref of parsedReferences(message) | slice:0:expandedReferences[message.timestamp] ? undefined : 3"
+                  >
+                    <div class="reference-title">
+                      <a [href]="ref.url" target="_blank">{{ ref.title || ref.url }}</a>
+                    </div>
+                    <div class="reference-source" *ngIf="ref.url">{{ ref.url }}</div>
+                    <div class="reference-snippet" *ngIf="ref.snippet">{{ ref.snippet }}</div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </mat-card-content>
+        <div class="message-time">
+          {{ message.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
+        </div>
+      </mat-card>
+    </ng-container>
   </div>
+</div>
