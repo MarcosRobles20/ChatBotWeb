@@ -13,7 +13,7 @@ import { ModelInfo } from '../../interfaces/Models.interface';
   styleUrl: './model-selector.component.css'
 })
 export class ModelSelectorComponent implements OnInit {
-  @Input() selectedModel: string = 'qwen3:8b';
+  @Input() selectedModel: string = 'qwen3.5:9b';
   @Input() disabled: boolean = false;
   @Output() modelChange = new EventEmitter<string>();
 
@@ -50,7 +50,7 @@ export class ModelSelectorComponent implements OnInit {
         this.isLoading = false;
         // Fallback con modelos por defecto si falla la API
         this.availableModels = [
-          { name: 'qwen3:8b', model: 'qwen3:8b', modified_at: '', size: 0, digest: '', details: {} as any }
+          { name: 'qwen3.5:9b', model: 'qwen3.5:9b', modified_at: '', size: 0, digest: '', details: {} as any }
         ];
       }
     });
